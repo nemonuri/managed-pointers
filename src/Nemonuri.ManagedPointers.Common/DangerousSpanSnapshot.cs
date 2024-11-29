@@ -3,13 +3,13 @@ namespace Nemonuri.ManagedPointers;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct DangerousSpanSnapshot<T>
 {
-    private readonly nint pointer;
-    private readonly int length;
+    private readonly nint _pointer;
+    private readonly int _length;
 
     internal DangerousSpanSnapshot(nint pointer, int length)
     {
-        this.pointer = pointer;
-        this.length = length;
+        _pointer = pointer;
+        _length = length;
     }
 
     public unsafe DangerousSpanSnapshot(in ReadOnlySpan<T> readOnlySpan) : this
@@ -19,9 +19,9 @@ public readonly record struct DangerousSpanSnapshot<T>
     )
     {}
 
-    public nint Pointer => pointer;
+    public nint Pointer => _pointer;
 
-    public int Length => length;
+    public int Length => _length;
 
     public unsafe Span<T> GetSpan() => new ((void*)Pointer, Length);
 }
