@@ -4,13 +4,10 @@
     <TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.0.1</Version>
     <LangVersion>13</LangVersion>
     <RootNamespace>Nemonuri.ManagedPointers</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="PolySharp" Version="1.15.0">
@@ -20,4 +17,13 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
     <PackageReference Include="System.Memory" Version="4.6.0" />
   </ItemGroup>
+
+  <PropertyGroup Label="Pack">
+    <Version>0.0.1</Version>
+    <RepositoryUrl>https://github.com/nemonuri/managed-pointers</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
 </Project>

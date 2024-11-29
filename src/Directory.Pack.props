@@ -44,7 +44,7 @@
       - Contoso Corporation (O)
     - TO-DO: Fill your or your organization's names as package authors.
     -->
-    <Authors Condition="'$(Authors)' == ''">TODO</Authors>
+    <Authors Condition="'$(Authors)' == ''">Nemonuri</Authors>
 
     <!--
     - A human-friendly title of the package, typically used in UI displays as on nuget.org and the Package Manager in Visual Studio.
