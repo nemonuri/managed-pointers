@@ -4,8 +4,8 @@ public static class ManagedPointerTheory
 {
     public static unsafe nint GetOffset<TGround, TTarget>
     (
-        scoped ref readonly TGround refGround,
-        scoped ref readonly TTarget refTarget
+        ref readonly TGround refGround,
+        ref readonly TTarget refTarget
     )
     {
         nint groundAddress = (nint)Unsafe.AsPointer(ref Unsafe.AsRef(in refGround));
