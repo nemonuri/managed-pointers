@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>13</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,5 +14,14 @@
   <!-- ConfigDirectory -->
     <Import Project="$(ConfigDirectory)CommunityToolkit.Diagnostics.props" />
   <!-- /ConfigDirectory -->
+
+  <PropertyGroup Label="Pack">
+    <Version>0.0.1</Version>
+    <RepositoryUrl>https://github.com/nemonuri/managed-pointers</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
 
 </Project>

@@ -4,7 +4,7 @@ using CommunityToolkit.Diagnostics;
 
 namespace Nemonuri.ManagedPointers.Collections;
 
-public ref struct DangerousSpanList<T>
+public readonly ref partial struct DangerousSpanList<T>
 {
     private readonly ReadOnlySpan<DangerousSpanSnapshot<T>> _innerDangerousSpanSnapshotSpan;
 
@@ -13,9 +13,9 @@ public ref struct DangerousSpanList<T>
         _innerDangerousSpanSnapshotSpan = innerDangerousSpanSnapshotSpan;
     }
 
-    public readonly ReadOnlySpan<DangerousSpanSnapshot<T>> InnerDangerousSpanSnapshotSpan => _innerDangerousSpanSnapshotSpan;
+    public  ReadOnlySpan<DangerousSpanSnapshot<T>> InnerDangerousSpanSnapshotSpan => _innerDangerousSpanSnapshotSpan;
 
-    public readonly int Count => _innerDangerousSpanSnapshotSpan.Length;
+    public int Count => _innerDangerousSpanSnapshotSpan.Length;
 
     public Span<T> this[int index]
     {
@@ -25,4 +25,6 @@ public ref struct DangerousSpanList<T>
             return _innerDangerousSpanSnapshotSpan[index].GetSpan();
         }
     }
+
+    public Enumerator GetEnumerator() => new (this);
 }
