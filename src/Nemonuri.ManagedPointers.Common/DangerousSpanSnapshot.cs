@@ -12,7 +12,7 @@ public readonly record struct DangerousSpanSnapshot<T>
         _length = length;
     }
 
-    public unsafe DangerousSpanSnapshot(in ReadOnlySpan<T> readOnlySpan) : this
+    public unsafe DangerousSpanSnapshot(ReadOnlySpan<T> readOnlySpan) : this
     (
         pointer: (nint)Unsafe.AsPointer(ref MemoryMarshal.GetReference(readOnlySpan)),
         length: readOnlySpan.Length
