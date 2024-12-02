@@ -7,8 +7,8 @@
     <LangVersion>13</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Nemonuri.ManagedPointers.Common\Nemonuri.ManagedPointers.Common.csproj" />
+  <ItemGroup Label="Local Package">
+    <PackageReference Include="Nemonuri.ManagedPointers.Common" Version="*" />
   </ItemGroup>
 
   <!-- ConfigDirectory -->
