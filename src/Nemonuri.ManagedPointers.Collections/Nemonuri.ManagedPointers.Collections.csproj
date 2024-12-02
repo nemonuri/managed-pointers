@@ -16,7 +16,7 @@
   <!-- /ConfigDirectory -->
 
   <PropertyGroup Label="Pack">
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <RepositoryUrl>https://github.com/nemonuri/managed-pointers</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- <PackageReleaseNotes></PackageReleaseNotes> -->

@@ -8,7 +8,7 @@ public readonly ref partial struct DangerousSpanList<T>
 {
     private readonly ReadOnlySpan<DangerousSpanSnapshot<T>> _innerDangerousSpanSnapshotSpan;
 
-    public DangerousSpanList(in ReadOnlySpan<DangerousSpanSnapshot<T>> innerDangerousSpanSnapshotSpan)
+    public DangerousSpanList(ReadOnlySpan<DangerousSpanSnapshot<T>> innerDangerousSpanSnapshotSpan)
     {
         _innerDangerousSpanSnapshotSpan = innerDangerousSpanSnapshotSpan;
     }
