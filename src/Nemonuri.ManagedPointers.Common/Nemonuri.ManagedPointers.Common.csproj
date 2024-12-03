@@ -9,21 +9,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="PolySharp" Version="1.15.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>  
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
-    <PackageReference Include="System.Memory" Version="4.6.0" />
-  </ItemGroup>
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)PolySharp.props" />
+    <Import Project="$(NugetConfigDirectory)System.Runtime.CompilerServices.Unsafe.props" />
+    <Import Project="$(NugetConfigDirectory)System.Memory.props" />
+  <!-- /NugetConfig -->
 
-  <PropertyGroup Label="Pack">
-    <Version>0.0.2</Version>
-    <RepositoryUrl>https://github.com/nemonuri/managed-pointers</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
-  </PropertyGroup>
+  <!-- Pack -->
+    <Import Project="$(ConfigDirectory)Pack.Common.props" />
 
-  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
+    <PropertyGroup>
+      <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  
+  <!-- /Pack -->
+
 </Project>

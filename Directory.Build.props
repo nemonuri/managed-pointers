@@ -3,5 +3,6 @@
           Condition="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')) != ''" />
   <PropertyGroup>
     <ConfigDirectory>$(MSBuildThisFileDirectory)config/</ConfigDirectory>
+    <NugetConfigDirectory>$(ConfigDirectory)nuget/</NugetConfigDirectory>
   </PropertyGroup>
 </Project>

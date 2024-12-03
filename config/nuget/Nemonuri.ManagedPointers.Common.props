@@ -1,0 +1,5 @@
+<Project>
+    <ItemGroup>
+        <PackageReference Include="Nemonuri.ManagedPointers.Common" Version="*" />
+    </ItemGroup>
+</Project>

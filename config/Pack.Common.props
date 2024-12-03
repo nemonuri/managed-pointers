@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup Label="Pack">
+    <RepositoryUrl>https://github.com/nemonuri/managed-pointers</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>0.0.3</Version>
+  </PropertyGroup>
+</Project>

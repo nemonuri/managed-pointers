@@ -7,21 +7,20 @@
     <LangVersion>13</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup Label="Local Package">
-    <PackageReference Include="Nemonuri.ManagedPointers.Common" Version="*" />
-  </ItemGroup>
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
 
-  <!-- ConfigDirectory -->
-    <Import Project="$(ConfigDirectory)CommunityToolkit.Diagnostics.props" />
-  <!-- /ConfigDirectory -->
+    <Import Project="$(NugetConfigDirectory)Nemonuri.ManagedPointers.Common.props" />
+  <!-- /NugetConfig -->
 
-  <PropertyGroup Label="Pack">
-    <Version>0.0.3</Version>
-    <RepositoryUrl>https://github.com/nemonuri/managed-pointers</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
-  </PropertyGroup>
+  <!-- Pack -->
+    <Import Project="$(ConfigDirectory)Pack.Common.props" />
 
-  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
+    <PropertyGroup>
+      <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  
+  <!-- /Pack -->
 
 </Project>
