@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Diagnostics;
-
-namespace Nemonuri.ManagedPointers.Collections;
+﻿namespace Nemonuri.ManagedPointers.Collections;
 
 public readonly ref partial struct DangerousSpanList<T>
 {
