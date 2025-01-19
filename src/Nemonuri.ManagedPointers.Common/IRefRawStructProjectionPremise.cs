@@ -17,7 +17,7 @@ public interface IRefRawStructProjectionPremise
         , allows ref struct
 #endif
 {
-    ref TRawCodomain Project(ref TRawDomain rawDomain);
+    ref TRawCodomain Project(ref TRawDomain item);
 
-    bool TryProject(ref TRawDomain rawDomain, out TRawCodomain rawCodomain);
+    bool TryProject(ref TRawDomain item, out TRawCodomain outResult);
 }
