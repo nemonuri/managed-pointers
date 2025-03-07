@@ -13,6 +13,7 @@
     <Import Project="$(NugetConfigDirectory)PolySharp.props" />
     <Import Project="$(NugetConfigDirectory)System.Runtime.CompilerServices.Unsafe.props" />
     <Import Project="$(NugetConfigDirectory)System.Memory.props" />
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
   <!-- /NugetConfig -->
 
   <!-- Pack -->
