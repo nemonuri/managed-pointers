@@ -31,6 +31,7 @@ public class ManagedPointerTheoryTest
             out int actualTreeHeight
         );
 
+        // Assert
         _output.WriteLine(
             $"""
             typeName: {typeName}
@@ -40,7 +41,6 @@ public class ManagedPointerTheoryTest
             actualTreeHeight: {actualTreeHeight}
             """
         );
-        // Assert
         Assert.Equal(expectedTreeBreadth, actualTreeBreadth);
         Assert.Equal(expectedTreeHeight, actualTreeHeight);
     }
@@ -53,4 +53,23 @@ public class ManagedPointerTheoryTest
         {typeof(SampleType4).FullName!, 5, 3}
     };
 
+
+    [Theory]
+    public void TypeName__GetSegmentTree__Lengths_Are_Expected
+    (
+        string typeName,
+        int[] expectedSegmentsLengths
+    )
+    {
+        // Model
+        Type type = Type.GetType(typeName) ?? throw new ArgumentNullException();
+
+        // Act
+        ManagedPointerTheory.GetSegmentTreeLayout(type, out int treeBreadth, out int treeHeight);
+        int treeSize = ManagedPointerTheory.GetRequiredLengthForFlattenedTreeSpan(treeBreadth, treeHeight);
+        nint[] lengths = expectedSegmentsLengths.Select(i => (nint)i).ToArray();
+
+        // Assert
+
+    }
 }
