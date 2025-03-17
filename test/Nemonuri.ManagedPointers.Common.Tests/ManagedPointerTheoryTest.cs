@@ -1,7 +1,15 @@
-﻿namespace Nemonuri.ManagedPointers.Common.Tests;
+﻿using Xunit.Abstractions;
+
+namespace Nemonuri.ManagedPointers.Common.Tests;
 
 public class ManagedPointerTheoryTest
 {
+    private readonly ITestOutputHelper _output;
+
+    public ManagedPointerTheoryTest(ITestOutputHelper output)
+    {
+        _output = output;
+    }
 
     [Theory]
     [MemberData(nameof(Data1))]
@@ -23,6 +31,15 @@ public class ManagedPointerTheoryTest
             out int actualTreeHeight
         );
 
+        _output.WriteLine(
+            $"""
+            typeName: {typeName}
+            expectedTreeBreadth: {expectedTreeBreadth},
+            expectedTreeHeight: {expectedTreeHeight},
+            actualTreeBreadth: {actualTreeBreadth},
+            actualTreeHeight: {actualTreeHeight}
+            """
+        );
         // Assert
         Assert.Equal(expectedTreeBreadth, actualTreeBreadth);
         Assert.Equal(expectedTreeHeight, actualTreeHeight);
@@ -32,7 +49,8 @@ public class ManagedPointerTheoryTest
     {
         {typeof(SampleType1).FullName!, 1, 1},
         {typeof(SampleType2).FullName!, 2, 1},
-        {typeof(SampleType3).FullName!, 5, 2}
+        {typeof(SampleType3).FullName!, 5, 2},
+        {typeof(SampleType4).FullName!, 5, 3}
     };
 
 }

@@ -18,3 +18,8 @@ public struct SampleType3
     public long Middle;
     public SampleType2 SampleType2_2;
 }
+
+public struct SampleType4
+{
+    public SampleType3 SampleType3_1;
+}
