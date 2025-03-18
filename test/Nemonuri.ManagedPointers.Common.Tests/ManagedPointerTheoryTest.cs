@@ -1,4 +1,5 @@
 ﻿using Xunit.Abstractions;
+using CL = Nemonuri.LogTexts.CollectionLogTextTheory;
 
 namespace Nemonuri.ManagedPointers.Common.Tests;
 
@@ -55,6 +56,7 @@ public class ManagedPointerTheoryTest
 
 
     [Theory]
+    [MemberData(nameof(Data2))]
     public void TypeName__GetSegmentTree__Lengths_Are_Expected
     (
         string typeName,
@@ -63,13 +65,44 @@ public class ManagedPointerTheoryTest
     {
         // Model
         Type type = Type.GetType(typeName) ?? throw new ArgumentNullException();
-
-        // Act
         ManagedPointerTheory.GetSegmentTreeLayout(type, out int treeBreadth, out int treeHeight);
         int treeSize = ManagedPointerTheory.GetRequiredLengthForFlattenedTreeSpan(treeBreadth, treeHeight);
-        nint[] lengths = expectedSegmentsLengths.Select(i => (nint)i).ToArray();
+        nint[] expectedSegmentsLengthsAsNInts = expectedSegmentsLengths.Select(i => (nint)i).ToArray();
+        
+        Span<nint> subSegmentsLengthsFlattened = stackalloc nint[treeSize];
+        Span<nint> subSegmentsDegreesFlattened = stackalloc nint[treeSize];
+        Span<nint> subSegmentsFirstChildIndexesFlattenedTree = stackalloc nint[treeSize];
+        Span<nint> subSegmentsParentIndexesFlattenedTree = stackalloc nint[treeSize];
+        Span<nint> leafSegmentsLengths = stackalloc nint[treeBreadth];
+
+        // Act
+        ManagedPointerTheory.GetSegmentTree
+        (
+            rootType: type,
+            treeBreadth: treeBreadth,
+            treeHeight: treeHeight,
+
+            subSegmentsLengthsFlattenedTreeDestination: subSegmentsLengthsFlattened,
+            subSegmentsDegreesFlattenedTreeDestination: subSegmentsDegreesFlattened,
+            subSegmentsFirstChildIndexesFlattenedTreeDestination: subSegmentsFirstChildIndexesFlattenedTree,
+            subSegmentsParentIndexesFlattenedTreeDestination: subSegmentsParentIndexesFlattenedTree,
+            leafSegmentsLengthsDestination: leafSegmentsLengths,
+
+            requiredLengthForFlattenedTreeSpan: out _
+        );
 
         // Assert
-
+        _output.WriteLine(
+            $"""
+            expected: {CL.ToLogString(expectedSegmentsLengths)},
+            actual: {CL.ToLogString(subSegmentsLengthsFlattened)}
+            """
+        );
+        Assert.Equal(expectedSegmentsLengthsAsNInts, subSegmentsLengthsFlattened);
     }
+
+    public static TheoryData<string, int[]> Data2 => new ()
+    {
+
+    };
 }
