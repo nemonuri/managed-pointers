@@ -169,6 +169,7 @@ public static class ManagedPointerTheory
             treeHeight,
             0,
             0,
+            0,
 
             subSegmentsLengthsFlattenedTreeDestination,
             subSegmentsLengthsTreeCurrentWidthsPerDepth,
@@ -190,6 +191,7 @@ public static class ManagedPointerTheory
             int treeHeight,
             int currentDepth,
             int parentIndexInPreviousDepth,
+            int currentChildIndex,
 
             Span<nint> subSegmentsLengthsFlattenedTreeDestination,
             Span<int> subSegmentsLengthsTreeCurrentWidthsPerDepth,
@@ -204,10 +206,10 @@ public static class ManagedPointerTheory
             Span<nint> leafSegmentsLengthsDestination
         )
         {
-            int currentIndexInCurrentDepth = subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth];
+            int currentIndexInCurrentDepth = subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth] + currentChildIndex;
 
             //--- If current depth is more than 0, write node date: parent index ---
-            if (currentDepth < 0)
+            if (currentDepth > 0)
             {
                 GetRefAsFlattenedTree(subSegmentsParentIndexesFlattenedTreeDestination, treeBreadth, treeHeight, 
                     currentIndexInCurrentDepth, currentDepth) =
@@ -249,6 +251,7 @@ public static class ManagedPointerTheory
             subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth]++;
             
             //--- Traverse child nodes ---
+            int childIndex = 0;
             foreach (FieldInfo field in fields)
             {
                 TraverseDepthFirst
@@ -258,6 +261,7 @@ public static class ManagedPointerTheory
                     treeHeight,
                     currentDepth+1,
                     currentIndexInCurrentDepth,
+                    childIndex,
 
                     subSegmentsLengthsFlattenedTreeDestination,
                     subSegmentsLengthsTreeCurrentWidthsPerDepth,
@@ -271,6 +275,8 @@ public static class ManagedPointerTheory
 
                     leafSegmentsLengthsDestination
                 );
+
+                childIndex++;
             }
             //---|
         }

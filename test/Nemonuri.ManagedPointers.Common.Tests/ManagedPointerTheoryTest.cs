@@ -71,8 +71,8 @@ public class ManagedPointerTheoryTest
         
         Span<nint> subSegmentsLengthsFlattened = stackalloc nint[treeSize];
         Span<nint> subSegmentsDegreesFlattened = stackalloc nint[treeSize];
-        Span<nint> subSegmentsFirstChildIndexesFlattenedTree = stackalloc nint[treeSize];
-        Span<nint> subSegmentsParentIndexesFlattenedTree = stackalloc nint[treeSize];
+        Span<nint> subSegmentsFirstChildIndexesFlattened = stackalloc nint[treeSize];
+        Span<nint> subSegmentsParentIndexesFlattened = stackalloc nint[treeSize];
         Span<nint> leafSegmentsLengths = stackalloc nint[treeBreadth];
 
         // Act
@@ -84,11 +84,11 @@ public class ManagedPointerTheoryTest
 
             subSegmentsLengthsFlattenedTreeDestination: subSegmentsLengthsFlattened,
             subSegmentsDegreesFlattenedTreeDestination: subSegmentsDegreesFlattened,
-            subSegmentsFirstChildIndexesFlattenedTreeDestination: subSegmentsFirstChildIndexesFlattenedTree,
-            subSegmentsParentIndexesFlattenedTreeDestination: subSegmentsParentIndexesFlattenedTree,
+            subSegmentsFirstChildIndexesFlattenedTreeDestination: subSegmentsFirstChildIndexesFlattened,
+            subSegmentsParentIndexesFlattenedTreeDestination: subSegmentsParentIndexesFlattened,
             leafSegmentsLengthsDestination: leafSegmentsLengths,
 
-            requiredLengthForFlattenedTreeSpan: out _
+            requiredLengthForFlattenedTreeSpan: out int requiredLengthForFlattenedTreeSpan
         );
 
         // Assert
@@ -96,6 +96,13 @@ public class ManagedPointerTheoryTest
             $"""
             expected: {CL.ToLogString(expectedSegmentsLengths)},
             actual: {CL.ToLogString(subSegmentsLengthsFlattened)}
+
+            subSegmentsLengthsFlattened: {CL.ToLogString(subSegmentsLengthsFlattened)},
+            subSegmentsDegreesFlattened: {CL.ToLogString(subSegmentsDegreesFlattened)},
+            subSegmentsFirstChildIndexesFlattened: {CL.ToLogString(subSegmentsFirstChildIndexesFlattened)},
+            subSegmentsParentIndexesFlattened: {CL.ToLogString(subSegmentsParentIndexesFlattened)},
+            leafSegmentsLengths: {CL.ToLogString(leafSegmentsLengths)},
+            requiredLengthForFlattenedTreeSpan: {requiredLengthForFlattenedTreeSpan}
             """
         );
         Assert.Equal(expectedSegmentsLengthsAsNInts, subSegmentsLengthsFlattened);
