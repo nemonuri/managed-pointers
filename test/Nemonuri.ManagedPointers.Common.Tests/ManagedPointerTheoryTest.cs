@@ -103,6 +103,18 @@ public class ManagedPointerTheoryTest
 
     public static TheoryData<string, int[]> Data2 => new ()
     {
-
+        {
+            typeof(SampleType1).FullName!, [1] // [X]
+        },
+        {
+            typeof(SampleType2).FullName!, [1, 1] // [X, Y]
+        },
+        {
+            typeof(SampleType3).FullName!, 
+            [
+                2, 1, 2, /**/ -1, -1, // [SampleType2_1, Middle, SampleType2_2]
+                1, 1, /**/ 1, 1, -1 // [X, Y, X, Y]
+            ]
+        }
     };
 }
