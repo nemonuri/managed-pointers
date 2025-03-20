@@ -54,9 +54,44 @@ public class ManagedPointerTheoryTest
         {typeof(SampleType4).FullName!, 5, 3}
     };
 
+    public void TypeName__GetSegmentTreeLayout__TreeMaxWidth_Is_Expected
+    (
+        string typeName,
+        int expectedMaxTreeWidth
+    )
+    {
+        // Model
+        Type type = Type.GetType(typeName) ?? throw new ArgumentNullException();
+
+        // Act
+        ManagedPointerTheory.GetSegmentTreeLayout
+        (
+            type, 
+            out int actualTreeBreadth,
+            out int actualTreeHeight,
+            out int actualMaxTreeWidth
+        );
+
+        // Assert
+        _output.WriteLine(
+            $"""
+            typeName: {typeName}
+            expectedMaxTreeWidth: {expectedMaxTreeWidth}
+            actualMaxTreeWidth: {actualMaxTreeWidth}
+            actualTreeBreadth: {actualTreeBreadth}
+            actualTreeHeight: {actualTreeHeight}
+            """
+        );
+        Assert.Equal(expectedMaxTreeWidth, actualMaxTreeWidth);
+    }
+
+    public static TheoryData<string, int> Data2 => new ()
+    {
+
+    };
 
     [Theory]
-    [MemberData(nameof(Data2))]
+    [MemberData(nameof(Data3))]
     public void TypeName__GetSegmentTree__Lengths_Are_Expected
     (
         string typeName,
@@ -109,7 +144,7 @@ public class ManagedPointerTheoryTest
         Assert.Equal(expectedSegmentsLengthsAsNInts, subSegmentsLengthsFlattened);
     }
 
-    public static TheoryData<string, int[]> Data2 => new ()
+    public static TheoryData<string, int[]> Data3 => new ()
     {
         {
             typeof(SampleType1).FullName!, [1] // [X]
