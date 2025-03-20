@@ -14,7 +14,7 @@ public class ManagedPointerTheoryTest
 
     [Theory]
     [MemberData(nameof(Data1))]
-    public void TypeName__Get_Type_And_Invoke_GetSegmentTreeLayout__Tree_Breadth_And_Height_Are_Expected
+    public void TypeName__Get_Type_And_Invoke_GetSegmentTreeBreadthAndHeight__Tree_Breadth_And_Height_Are_Expected
     (
         string typeName,
         int expectedTreeBreadth,
@@ -25,7 +25,7 @@ public class ManagedPointerTheoryTest
         Type type = Type.GetType(typeName) ?? throw new ArgumentNullException();
 
         // Act
-        ManagedPointerTheory.GetSegmentTreeLayout
+        ManagedPointerTheory.GetSegmentTreeBreadthAndHeight
         (
             type, 
             out int actualTreeBreadth, 
@@ -65,8 +65,8 @@ public class ManagedPointerTheoryTest
     {
         // Model
         Type type = Type.GetType(typeName) ?? throw new ArgumentNullException();
-        ManagedPointerTheory.GetSegmentTreeLayout(type, out int treeBreadth, out int treeHeight);
-        int treeSize = ManagedPointerTheory.GetRequiredLengthForFlattenedTreeSpan(treeBreadth, treeHeight);
+        ManagedPointerTheory.GetSegmentTreeLayout(type, out int treeBreadth, out int treeHeight, out int maxTreeWidth);
+        int treeSize = ManagedPointerTheory.GetRequiredLengthForFlattenedTreeSpan(maxTreeWidth, treeHeight);
         nint[] expectedSegmentsLengthsAsNInts = expectedSegmentsLengths.Select(i => (nint)i).ToArray();
         
         Span<nint> subSegmentsLengthsFlattened = stackalloc nint[treeSize];
@@ -81,6 +81,7 @@ public class ManagedPointerTheoryTest
             rootType: type,
             treeBreadth: treeBreadth,
             treeHeight: treeHeight,
+            maxTreeWidth: maxTreeWidth,
 
             subSegmentsLengthsFlattenedTreeDestination: subSegmentsLengthsFlattened,
             subSegmentsDegreesFlattenedTreeDestination: subSegmentsDegreesFlattened,

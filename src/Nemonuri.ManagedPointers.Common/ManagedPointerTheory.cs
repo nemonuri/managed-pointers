@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Buffers;
 
 namespace Nemonuri.ManagedPointers;
 
@@ -87,7 +88,19 @@ public static class ManagedPointerTheory
     (
         Type rootType,
         out int treeBreadth,
-        out int treeHeight
+        out int treeHeight,
+        out int maxTreeWidth
+    )
+    {
+        GetSegmentTreeBreadthAndHeight(rootType, out treeBreadth, out treeHeight);
+        GetSegmentTreeMaxWidth(rootType, treeHeight, out maxTreeWidth);
+    }
+
+    public static void GetSegmentTreeBreadthAndHeight
+    (
+        Type rootType,
+        out int breadth,
+        out int height
     )
     {
         int currentBreadth = 0;
@@ -96,8 +109,8 @@ public static class ManagedPointerTheory
 
         TraverseDepthFirst(rootType, ref currentBreadth, ref currentDepth, ref highestDepth);
 
-        treeBreadth = currentBreadth;
-        treeHeight = highestDepth;
+        breadth = currentBreadth;
+        height = highestDepth;
 
         static void TraverseDepthFirst(Type currentType, ref int currentBreadth, ref int currentDepth, ref int highestDepth)
         {
@@ -127,11 +140,56 @@ public static class ManagedPointerTheory
         }
     }
 
+    public static void GetSegmentTreeMaxWidth
+    (
+        Type rootType,
+        int height,
+        out int maxWidth
+    )
+    {
+        Guard.IsGreaterThanOrEqualTo(height, 0);
+
+        int currentDepth = 0;
+        Span<int> currentWidthsPerDepth = stackalloc int[height+1];
+        currentWidthsPerDepth.Clear();
+
+        TraverseDepthFirst(rootType, ref currentDepth, currentWidthsPerDepth);
+
+        maxWidth = 0;
+        foreach (int width in currentWidthsPerDepth)    
+        {
+            maxWidth = Math.Max(width, maxWidth);
+        }
+
+        static void TraverseDepthFirst(Type currentType, ref int currentDepth, Span<int> currentWidthsPerDepth)
+        {
+            //--- Increase current width in current depth ---
+            currentWidthsPerDepth[currentDepth]++;
+            //---|
+
+            //--- Get child nodes ---
+            FieldInfo[] fields = currentType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            //---|
+            
+            currentDepth++;
+
+            //--- Traverse child nodes ---
+            foreach (FieldInfo field in fields)
+            {
+                TraverseDepthFirst(field.FieldType, ref currentDepth, currentWidthsPerDepth);
+            }
+            //---|
+            
+            currentDepth--;
+        }
+    }
+
     public static void GetSegmentTree
     (
         Type rootType,
         int treeBreadth,
         int treeHeight,
+        int maxTreeWidth,
 
         Span<nint> subSegmentsLengthsFlattenedTreeDestination,
         Span<nint> subSegmentsDegreesFlattenedTreeDestination,
@@ -141,7 +199,7 @@ public static class ManagedPointerTheory
         out int requiredLengthForFlattenedTreeSpan
     )
     {
-        requiredLengthForFlattenedTreeSpan = GetRequiredLengthForFlattenedTreeSpan(treeBreadth, treeHeight);
+        requiredLengthForFlattenedTreeSpan = GetRequiredLengthForFlattenedTreeSpan(maxTreeWidth, treeHeight);
         Guard.IsLessThanOrEqualTo(requiredLengthForFlattenedTreeSpan, subSegmentsLengthsFlattenedTreeDestination.Length);
         Guard.IsLessThanOrEqualTo(requiredLengthForFlattenedTreeSpan, subSegmentsDegreesFlattenedTreeDestination.Length);
         Guard.IsLessThanOrEqualTo(requiredLengthForFlattenedTreeSpan, subSegmentsFirstChildIndexesFlattenedTreeDestination.Length);
@@ -282,11 +340,11 @@ public static class ManagedPointerTheory
 
     public static int GetRequiredLengthForFlattenedTreeSpan
     (
-        int treeBreadth,
+        int maxTreeWidth,
         int treeHeight
     )
     {
-        return treeBreadth * (treeHeight + 1);
+        return maxTreeWidth * (treeHeight + 1);
     }
 
     public static ref nint GetRefAsFlattenedTree(Span<nint> flattenedTree, int treeBreadth, int treeHeight, int x, int y)
