@@ -94,14 +94,14 @@ public class ManagedPointerTheoryTest
         // Assert
         _output.WriteLine(
             $"""
-            expected: {CL.ToLogString(expectedSegmentsLengths)},
-            actual: {CL.ToLogString(subSegmentsLengthsFlattened)}
+            expected: {GetLogString(expectedSegmentsLengths.AsSpan(), treeBreadth)},
+            actual: {GetLogString(subSegmentsLengthsFlattened, treeBreadth)}
 
-            subSegmentsLengthsFlattened: {CL.ToLogString(subSegmentsLengthsFlattened)},
-            subSegmentsDegreesFlattened: {CL.ToLogString(subSegmentsDegreesFlattened)},
-            subSegmentsFirstChildIndexesFlattened: {CL.ToLogString(subSegmentsFirstChildIndexesFlattened)},
-            subSegmentsParentIndexesFlattened: {CL.ToLogString(subSegmentsParentIndexesFlattened)},
-            leafSegmentsLengths: {CL.ToLogString(leafSegmentsLengths)},
+            subSegmentsLengthsFlattened: {GetLogString(subSegmentsLengthsFlattened, treeBreadth)},
+            subSegmentsDegreesFlattened: {GetLogString(subSegmentsDegreesFlattened, treeBreadth)},
+            subSegmentsFirstChildIndexesFlattened: {GetLogString(subSegmentsFirstChildIndexesFlattened, treeBreadth)},
+            subSegmentsParentIndexesFlattened: {GetLogString(subSegmentsParentIndexesFlattened, treeBreadth)},
+            leafSegmentsLengths: {GetLogString(leafSegmentsLengths, treeBreadth)},
             requiredLengthForFlattenedTreeSpan: {requiredLengthForFlattenedTreeSpan}
             """
         );
@@ -122,6 +122,14 @@ public class ManagedPointerTheoryTest
                 2, 1, 2, /**/ -1, -1, // [SampleType2_1, Middle, SampleType2_2]
                 1, 1, /**/ 1, 1, -1 // [X, Y, X, Y]
             ]
+        },
+        {
+            typeof(SampleType5).FullName!, []
         }
     };
+
+    internal static string GetLogString<T>(Span<T> source, int width)
+    {
+        return Environment.NewLine + CL.ToLogString((ReadOnlySpan<T>)source, "|", "|" + Environment.NewLine, ", ", width);
+    }
 }

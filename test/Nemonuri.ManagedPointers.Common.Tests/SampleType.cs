@@ -23,3 +23,9 @@ public struct SampleType4
 {
     public SampleType3 SampleType3_1;
 }
+
+public struct SampleType5
+{
+    public SampleType3 SampleType3_1;
+    public SampleType4 SampleType4_1;
+}

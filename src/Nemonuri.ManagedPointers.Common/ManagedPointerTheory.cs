@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Nemonuri.ManagedPointers;
 
@@ -162,12 +161,13 @@ public static class ManagedPointerTheory
         Span<nint> subSegmentsAccumulatedDegreesPerDepth = stackalloc nint[treeHeight+1];
         subSegmentsAccumulatedDegreesPerDepth.Clear();
 
+        int leafSegmentsLengthsWritingIndex = 0;
+
         TraverseDepthFirst
         (
             rootType,
             treeBreadth,
             treeHeight,
-            0,
             0,
             0,
 
@@ -181,7 +181,8 @@ public static class ManagedPointerTheory
 
             subSegmentsParentIndexesFlattenedTreeDestination,
 
-            leafSegmentsLengthsDestination
+            leafSegmentsLengthsDestination,
+            ref leafSegmentsLengthsWritingIndex
         );
 
         static void TraverseDepthFirst
@@ -191,7 +192,6 @@ public static class ManagedPointerTheory
             int treeHeight,
             int currentDepth,
             int parentIndexInPreviousDepth,
-            int currentChildIndex,
 
             Span<nint> subSegmentsLengthsFlattenedTreeDestination,
             Span<int> subSegmentsLengthsTreeCurrentWidthsPerDepth,
@@ -203,10 +203,12 @@ public static class ManagedPointerTheory
 
             Span<nint> subSegmentsParentIndexesFlattenedTreeDestination,
 
-            Span<nint> leafSegmentsLengthsDestination
+            Span<nint> leafSegmentsLengthsDestination,
+            ref int leafSegmentsLengthsWritingIndex
         )
         {
-            int currentIndexInCurrentDepth = subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth] + currentChildIndex;
+            int currentIndexInCurrentDepth = subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth];
+            subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth]++;
 
             //--- If current depth is more than 0, write node date: parent index ---
             if (currentDepth > 0)
@@ -236,7 +238,8 @@ public static class ManagedPointerTheory
             //--- If node is leaf, set leaf ---
             if (fields.Length == 0)
             {
-                leafSegmentsLengthsDestination[currentIndexInCurrentDepth] = Marshal.SizeOf(currentType);
+                leafSegmentsLengthsDestination[leafSegmentsLengthsWritingIndex] = Marshal.SizeOf(currentType);
+                leafSegmentsLengthsWritingIndex++;
                 return;
             }
             //---|
@@ -248,10 +251,7 @@ public static class ManagedPointerTheory
             subSegmentsAccumulatedDegreesPerDepth[currentDepth] += fields.Length;
             //---|
             
-            subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth]++;
-            
             //--- Traverse child nodes ---
-            int childIndex = 0;
             foreach (FieldInfo field in fields)
             {
                 TraverseDepthFirst
@@ -261,7 +261,6 @@ public static class ManagedPointerTheory
                     treeHeight,
                     currentDepth+1,
                     currentIndexInCurrentDepth,
-                    childIndex,
 
                     subSegmentsLengthsFlattenedTreeDestination,
                     subSegmentsLengthsTreeCurrentWidthsPerDepth,
@@ -273,10 +272,9 @@ public static class ManagedPointerTheory
 
                     subSegmentsParentIndexesFlattenedTreeDestination,
 
-                    leafSegmentsLengthsDestination
+                    leafSegmentsLengthsDestination,
+                    ref leafSegmentsLengthsWritingIndex
                 );
-
-                childIndex++;
             }
             //---|
         }
