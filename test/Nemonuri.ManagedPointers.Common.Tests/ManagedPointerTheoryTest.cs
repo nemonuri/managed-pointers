@@ -142,7 +142,7 @@ public class ManagedPointerTheoryTest
             subSegmentsDegreesFlattened: {GetLogString(subSegmentsDegreesFlattened, maxTreeWidth)},
             subSegmentsFirstChildIndexesFlattened: {GetLogString(subSegmentsFirstChildIndexesFlattened, maxTreeWidth)},
             subSegmentsParentIndexesFlattened: {GetLogString(subSegmentsParentIndexesFlattened, maxTreeWidth)},
-            leafSegmentsLengths: {GetLogString(leafSegmentsLengths, leafSegmentsLengths.Length)},
+            leafSegmentsLengths: {CL.ToLogString(leafSegmentsLengths)},
             requiredLengthForFlattenedTreeSpan: {requiredLengthForFlattenedTreeSpan}
             """
         );
@@ -197,5 +197,76 @@ public class ManagedPointerTheoryTest
     internal static string GetLogString<T>(Span<T> source, int width)
     {
         return Environment.NewLine + CL.ToLogString((ReadOnlySpan<T>)source, "|", "|" + Environment.NewLine, ", ", width);
+    }
+
+    [Theory]
+    [MemberData(nameof(Data4))]
+    public void SubSegmentsLengths_Displacement__TryGetSubSegment__Results_Are_Expected
+    (
+        int[] subSegmentsLengthsAsIntArray,
+        int displacement,
+        bool expectedSuccess,
+        int expectedFoundSubSegmentIndex,
+        int expectedFoundSubSegmentLength,
+        int expectedFoundSubSegmentBasedDisplacement
+    )
+    {
+        // Model
+        ReadOnlySpan<nint> subSegmentsLengths = [..subSegmentsLengthsAsIntArray.Select(i=>(nint)i)];
+
+        // Act
+        bool actualSuccess =
+        ManagedPointerTheory.TryGetSubSegment
+        (
+            subSegmentsLengths,
+            displacement,
+            out int actualFoundSubSegmentIndex,
+            out nint actualFoundSubSegmentLength,
+            out nint actualFoundSubSegmentBasedDisplacement
+        );
+
+        // Assert
+        _output.WriteLine(
+            $"""
+            subSegmentsLengths: {CL.ToLogString(subSegmentsLengths)}
+            displacement: {displacement}
+
+            expectedSuccess: {expectedSuccess}
+            actualSuccess: {actualSuccess}
+
+            expectedFoundSubSegmentIndex: {expectedFoundSubSegmentIndex}
+            actualFoundSubSegmentIndex: {actualFoundSubSegmentIndex}
+
+            expectedFoundSubSegmentLength: {expectedFoundSubSegmentLength}
+            actualFoundSubSegmentLength: {actualFoundSubSegmentLength}
+
+            expectedFoundSubSegmentBasedDisplacement: {expectedFoundSubSegmentBasedDisplacement}
+            actualFoundSubSegmentBasedDisplacement: {actualFoundSubSegmentBasedDisplacement}
+            """
+        );
+        Assert.Equal(expectedSuccess, actualSuccess);
+        Assert.Equal(expectedFoundSubSegmentIndex, actualFoundSubSegmentIndex);
+        Assert.Equal(expectedFoundSubSegmentLength, actualFoundSubSegmentLength);
+        Assert.Equal(expectedFoundSubSegmentBasedDisplacement, actualFoundSubSegmentBasedDisplacement);
+    }
+
+    public static TheoryData<int[], int, bool, int, int, int> Data4
+    {
+        get
+        {
+            TheoryData<int[], int, bool, int, int, int> result = new ();
+
+            int[] lengths1 = [8, 4, 4, 8, 8, 4];
+
+            result.Add(lengths1, 0, true, 0, 8, 0);
+            result.Add(lengths1, 3, true, 0, 8, 3);
+            result.Add(lengths1, 11, true, 1, 4, 3);
+            result.Add(lengths1, 12, true, 2, 4, 0);
+            result.Add(lengths1, 30, true, 4, 8, 6);
+            result.Add(lengths1, 35, true, 5, 4, 3);
+            result.Add(lengths1, 36, false, 0, 0, 0);
+
+            return result;
+        }
     }
 }

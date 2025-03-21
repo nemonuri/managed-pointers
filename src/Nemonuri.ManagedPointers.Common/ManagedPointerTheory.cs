@@ -357,7 +357,7 @@ public static class ManagedPointerTheory
 #if false
     public static bool TryGetSubSegments<T>
     (
-        int treeBreadth,
+        int maxTreeWidth,
         int treeHeight,
         ReadOnlySpan<nint> subSegmentsLengthsFlattenedTree,
         ReadOnlySpan<nint> subSegmentsDegreesFlattenedTree,
