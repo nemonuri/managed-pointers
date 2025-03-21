@@ -224,7 +224,7 @@ public static class ManagedPointerTheory
         TraverseDepthFirst
         (
             rootType,
-            treeBreadth,
+            maxTreeWidth,
             treeHeight,
             0,
             0,
@@ -246,7 +246,7 @@ public static class ManagedPointerTheory
         static void TraverseDepthFirst
         (
             Type currentType,
-            int treeBreadth,
+            int maxTreeWidth,
             int treeHeight,
             int currentDepth,
             int parentIndexInPreviousDepth,
@@ -271,14 +271,14 @@ public static class ManagedPointerTheory
             //--- If current depth is more than 0, write node date: parent index ---
             if (currentDepth > 0)
             {
-                GetRefAsFlattenedTree(subSegmentsParentIndexesFlattenedTreeDestination, treeBreadth, treeHeight, 
+                GetRefAsFlattenedTree(subSegmentsParentIndexesFlattenedTreeDestination, maxTreeWidth, treeHeight, 
                     currentIndexInCurrentDepth, currentDepth) =
                     parentIndexInPreviousDepth;
             }
             //---|
 
             //--- Write node data: segment length ---
-            GetRefAsFlattenedTree(subSegmentsLengthsFlattenedTreeDestination, treeBreadth, treeHeight, 
+            GetRefAsFlattenedTree(subSegmentsLengthsFlattenedTreeDestination, maxTreeWidth, treeHeight, 
                 currentIndexInCurrentDepth, currentDepth) =
                 Marshal.SizeOf(currentType);
             //---|
@@ -288,7 +288,7 @@ public static class ManagedPointerTheory
             //---|
 
             //--- Write node data: degree (child count) ---
-            GetRefAsFlattenedTree(subSegmentsDegreesFlattenedTreeDestination, treeBreadth, treeHeight, 
+            GetRefAsFlattenedTree(subSegmentsDegreesFlattenedTreeDestination, maxTreeWidth, treeHeight, 
                 currentIndexInCurrentDepth, currentDepth) =
                 fields.Length;
             //---|
@@ -303,7 +303,7 @@ public static class ManagedPointerTheory
             //---|
 
             //--- Write node data: first child index in next ---
-            GetRefAsFlattenedTree(subSegmentsFirstChildIndexesFlattenedTreeDestination, treeBreadth, treeHeight, 
+            GetRefAsFlattenedTree(subSegmentsFirstChildIndexesFlattenedTreeDestination, maxTreeWidth, treeHeight, 
                 currentIndexInCurrentDepth, currentDepth) =
                 subSegmentsAccumulatedDegreesPerDepth[currentDepth];
             subSegmentsAccumulatedDegreesPerDepth[currentDepth] += fields.Length;
@@ -315,7 +315,7 @@ public static class ManagedPointerTheory
                 TraverseDepthFirst
                 (
                     field.FieldType, 
-                    treeBreadth,
+                    maxTreeWidth,
                     treeHeight,
                     currentDepth+1,
                     currentIndexInCurrentDepth,

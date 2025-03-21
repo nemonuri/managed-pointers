@@ -54,6 +54,8 @@ public class ManagedPointerTheoryTest
         {typeof(SampleType4).FullName!, 5, 3}
     };
 
+    [Theory]
+    [MemberData(nameof(Data2))]
     public void TypeName__GetSegmentTreeLayout__TreeMaxWidth_Is_Expected
     (
         string typeName,
@@ -87,7 +89,10 @@ public class ManagedPointerTheoryTest
 
     public static TheoryData<string, int> Data2 => new ()
     {
-
+        {typeof(SampleType1).FullName!, 1},
+        {typeof(SampleType2).FullName!, 2},
+        {typeof(SampleType3).FullName!, 4},
+        {typeof(SampleType4).FullName!, 4}
     };
 
     [Theory]
@@ -130,14 +135,14 @@ public class ManagedPointerTheoryTest
         // Assert
         _output.WriteLine(
             $"""
-            expected: {GetLogString(expectedSegmentsLengths.AsSpan(), treeBreadth)},
-            actual: {GetLogString(subSegmentsLengthsFlattened, treeBreadth)}
+            expected: {GetLogString(expectedSegmentsLengths.AsSpan(), maxTreeWidth)},
+            actual: {GetLogString(subSegmentsLengthsFlattened, maxTreeWidth)}
 
-            subSegmentsLengthsFlattened: {GetLogString(subSegmentsLengthsFlattened, treeBreadth)},
-            subSegmentsDegreesFlattened: {GetLogString(subSegmentsDegreesFlattened, treeBreadth)},
-            subSegmentsFirstChildIndexesFlattened: {GetLogString(subSegmentsFirstChildIndexesFlattened, treeBreadth)},
-            subSegmentsParentIndexesFlattened: {GetLogString(subSegmentsParentIndexesFlattened, treeBreadth)},
-            leafSegmentsLengths: {GetLogString(leafSegmentsLengths, treeBreadth)},
+            subSegmentsLengthsFlattened: {GetLogString(subSegmentsLengthsFlattened, maxTreeWidth)},
+            subSegmentsDegreesFlattened: {GetLogString(subSegmentsDegreesFlattened, maxTreeWidth)},
+            subSegmentsFirstChildIndexesFlattened: {GetLogString(subSegmentsFirstChildIndexesFlattened, maxTreeWidth)},
+            subSegmentsParentIndexesFlattened: {GetLogString(subSegmentsParentIndexesFlattened, maxTreeWidth)},
+            leafSegmentsLengths: {GetLogString(leafSegmentsLengths, leafSegmentsLengths.Length)},
             requiredLengthForFlattenedTreeSpan: {requiredLengthForFlattenedTreeSpan}
             """
         );
@@ -147,20 +152,45 @@ public class ManagedPointerTheoryTest
     public static TheoryData<string, int[]> Data3 => new ()
     {
         {
-            typeof(SampleType1).FullName!, [1] // [X]
+            typeof(SampleType1).FullName!, 
+            [
+                4,
+                4
+            ]
         },
         {
-            typeof(SampleType2).FullName!, [1, 1] // [X, Y]
+            typeof(SampleType2).FullName!,
+            [
+                8, -1,
+                4, 4
+            ]
         },
         {
             typeof(SampleType3).FullName!, 
             [
-                2, 1, 2, /**/ -1, -1, // [SampleType2_1, Middle, SampleType2_2]
-                1, 1, /**/ 1, 1, -1 // [X, Y, X, Y]
+                24, -1, -1, -1,
+                8, 8, 8, -1,
+                4, 4, 4, 4
             ]
         },
         {
-            typeof(SampleType5).FullName!, []
+            typeof(SampleType4).FullName!, 
+            [
+                24, -1, -1, -1,
+                24, -1, -1, -1,
+                8, 8, 8, -1,
+                4, 4, 4, 4
+            ]
+        },
+        {
+            typeof(SampleType5).FullName!,
+            [
+                48, /**/ -1, -1, -1, -1, -1, -1,
+                24, /**/ 24, /**/ -1, -1, -1, -1, -1,
+                8, 8, 8, /**/ 24, /**/ -1, -1, -1,
+                4, 4, /**/ 4, 4, /**/ 8, 8, 8, /**/
+                4, 4, /**/ 4, 4, /**/ -1, -1, -1,
+            ]
         }
     };
 
