@@ -114,6 +114,8 @@ public class ManagedPointerTheoryTest
         Span<nint> subSegmentsFirstChildIndexesFlattened = stackalloc nint[treeSize];
         Span<nint> subSegmentsParentIndexesFlattened = stackalloc nint[treeSize];
         Span<nint> leafSegmentsLengths = stackalloc nint[treeBreadth];
+        Span<int> leafSegmentsIndexesInDepthInFlattenedTree = stackalloc int[treeBreadth];
+        Span<int> leafSegmentsDepthsInFlattenedTree = stackalloc int[treeBreadth];
 
         // Act
         ManagedPointerTheory.GetSegmentTree
@@ -127,7 +129,10 @@ public class ManagedPointerTheoryTest
             subSegmentsDegreesFlattenedTreeDestination: subSegmentsDegreesFlattened,
             subSegmentsFirstChildIndexesFlattenedTreeDestination: subSegmentsFirstChildIndexesFlattened,
             subSegmentsParentIndexesFlattenedTreeDestination: subSegmentsParentIndexesFlattened,
+
             leafSegmentsLengthsDestination: leafSegmentsLengths,
+            leafSegmentsIndexesInDepthInFlattenedTreeDestination: leafSegmentsIndexesInDepthInFlattenedTree,
+            leafSegmentsDepthsInFlattenedTreeDestination: leafSegmentsDepthsInFlattenedTree,
 
             requiredLengthForFlattenedTreeSpan: out int requiredLengthForFlattenedTreeSpan
         );
@@ -142,7 +147,9 @@ public class ManagedPointerTheoryTest
             subSegmentsDegreesFlattened: {GetLogString(subSegmentsDegreesFlattened, maxTreeWidth)},
             subSegmentsFirstChildIndexesFlattened: {GetLogString(subSegmentsFirstChildIndexesFlattened, maxTreeWidth)},
             subSegmentsParentIndexesFlattened: {GetLogString(subSegmentsParentIndexesFlattened, maxTreeWidth)},
-            leafSegmentsLengths: {CL.ToLogString(leafSegmentsLengths)},
+            leafSegmentsLengths: {CL.ToLogString(leafSegmentsLengths)}
+            leafSegmentsIndexesInDepthInFlattenedTree: {CL.ToLogString(leafSegmentsIndexesInDepthInFlattenedTree)}
+            leafSegmentsDepthsInFlattenedTree: {CL.ToLogString(leafSegmentsDepthsInFlattenedTree)}
             requiredLengthForFlattenedTreeSpan: {requiredLengthForFlattenedTreeSpan}
             """
         );

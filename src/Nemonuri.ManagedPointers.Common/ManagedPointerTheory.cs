@@ -195,22 +195,35 @@ public static class ManagedPointerTheory
         Span<nint> subSegmentsDegreesFlattenedTreeDestination,
         Span<nint> subSegmentsFirstChildIndexesFlattenedTreeDestination,
         Span<nint> subSegmentsParentIndexesFlattenedTreeDestination,
+
         Span<nint> leafSegmentsLengthsDestination,
+        Span<int> leafSegmentsIndexesInDepthInFlattenedTreeDestination,
+        Span<int> leafSegmentsDepthsInFlattenedTreeDestination,
+
         out int requiredLengthForFlattenedTreeSpan
     )
     {
         requiredLengthForFlattenedTreeSpan = GetRequiredLengthForFlattenedTreeSpan(maxTreeWidth, treeHeight);
+
+        //--- Guard span lengths ---
         Guard.IsLessThanOrEqualTo(requiredLengthForFlattenedTreeSpan, subSegmentsLengthsFlattenedTreeDestination.Length);
         Guard.IsLessThanOrEqualTo(requiredLengthForFlattenedTreeSpan, subSegmentsDegreesFlattenedTreeDestination.Length);
         Guard.IsLessThanOrEqualTo(requiredLengthForFlattenedTreeSpan, subSegmentsFirstChildIndexesFlattenedTreeDestination.Length);
         Guard.IsLessThanOrEqualTo(requiredLengthForFlattenedTreeSpan, subSegmentsParentIndexesFlattenedTreeDestination.Length);
         Guard.IsLessThanOrEqualTo(treeBreadth, leafSegmentsLengthsDestination.Length);
+        Guard.IsLessThanOrEqualTo(treeBreadth, leafSegmentsIndexesInDepthInFlattenedTreeDestination.Length);
+        Guard.IsLessThanOrEqualTo(treeBreadth, leafSegmentsDepthsInFlattenedTreeDestination.Length);
+        //---|
 
         //--- Initialize flattened tree spans ---
         subSegmentsLengthsFlattenedTreeDestination[..requiredLengthForFlattenedTreeSpan].Fill(-1);
         subSegmentsDegreesFlattenedTreeDestination[..requiredLengthForFlattenedTreeSpan].Fill(-1);
         subSegmentsFirstChildIndexesFlattenedTreeDestination[..requiredLengthForFlattenedTreeSpan].Fill(-1);
         subSegmentsParentIndexesFlattenedTreeDestination[..requiredLengthForFlattenedTreeSpan].Fill(-1);
+
+        leafSegmentsLengthsDestination[..treeBreadth].Fill(-1);
+        leafSegmentsIndexesInDepthInFlattenedTreeDestination[..treeBreadth].Fill(-1);
+        leafSegmentsDepthsInFlattenedTreeDestination[..treeBreadth].Fill(-1);
         //---|
 
         Span<int> subSegmentsLengthsTreeCurrentWidthsPerDepth = stackalloc int[treeHeight+1];
@@ -240,6 +253,9 @@ public static class ManagedPointerTheory
             subSegmentsParentIndexesFlattenedTreeDestination,
 
             leafSegmentsLengthsDestination,
+            leafSegmentsIndexesInDepthInFlattenedTreeDestination,
+            leafSegmentsDepthsInFlattenedTreeDestination,
+
             ref leafSegmentsLengthsWritingIndex
         );
 
@@ -262,11 +278,16 @@ public static class ManagedPointerTheory
             Span<nint> subSegmentsParentIndexesFlattenedTreeDestination,
 
             Span<nint> leafSegmentsLengthsDestination,
+            Span<int> leafSegmentsXInFlattenedTreeDestination,
+            Span<int> leafSegmentsYInFlattenedTreeDestination,
+            
             ref int leafSegmentsLengthsWritingIndex
         )
         {
+            //--- Get and increse tree width ---
             int currentIndexInCurrentDepth = subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth];
             subSegmentsLengthsTreeCurrentWidthsPerDepth[currentDepth]++;
+            //---|
 
             //--- If current depth is more than 0, write node date: parent index ---
             if (currentDepth > 0)
@@ -297,6 +318,8 @@ public static class ManagedPointerTheory
             if (fields.Length == 0)
             {
                 leafSegmentsLengthsDestination[leafSegmentsLengthsWritingIndex] = Marshal.SizeOf(currentType);
+                leafSegmentsXInFlattenedTreeDestination[leafSegmentsLengthsWritingIndex] = currentIndexInCurrentDepth;
+                leafSegmentsYInFlattenedTreeDestination[leafSegmentsLengthsWritingIndex] = currentDepth;
                 leafSegmentsLengthsWritingIndex++;
                 return;
             }
@@ -331,6 +354,9 @@ public static class ManagedPointerTheory
                     subSegmentsParentIndexesFlattenedTreeDestination,
 
                     leafSegmentsLengthsDestination,
+                    leafSegmentsXInFlattenedTreeDestination,
+                    leafSegmentsYInFlattenedTreeDestination,
+
                     ref leafSegmentsLengthsWritingIndex
                 );
             }
@@ -347,12 +373,14 @@ public static class ManagedPointerTheory
         return maxTreeWidth * (treeHeight + 1);
     }
 
-    public static ref nint GetRefAsFlattenedTree(Span<nint> flattenedTree, int treeBreadth, int treeHeight, int x, int y)
+    public static ref nint GetRefAsFlattenedTree(Span<nint> flattenedTree, int maxTreeWidth, int treeHeight, int x, int y)
     {
-        Guard.IsLessThan(x, treeBreadth);
+        Guard.IsLessThan(x, maxTreeWidth);
         Guard.IsLessThan(y, treeHeight+1);
-        return ref flattenedTree[x + treeBreadth * y];
+        return ref flattenedTree[GetFlattenIndex(maxTreeWidth, x, y)];
     }
+
+    public static int GetFlattenIndex(int maxTreeWidth, int x, int y) => x + maxTreeWidth * y;
 
 #if false
     public static bool TryGetSubSegments<T>
