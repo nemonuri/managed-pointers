@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Buffers;
 
 namespace Nemonuri.ManagedPointers;
 
@@ -364,6 +363,43 @@ public static class ManagedPointerTheory
         }
     }
 
+    public static void GetSegmentTree
+    (
+        Type rootType,
+        int treeBreadth,
+        int treeHeight,
+        int maxTreeWidth,
+
+        TreeMemory2D<nint> subSegmentsLengthsTreeMemory2DDestination,
+        TreeMemory2D<nint> subSegmentsDegreesTreeMemory2DDestination,
+        TreeMemory2D<nint> subSegmentsFirstChildIndexesTreeMemory2DDestination,
+        TreeMemory2D<nint> subSegmentsParentIndexesTreeMemory2DDestination,
+
+        Span<nint> leafSegmentsLengthsDestination,
+        Span<int> leafSegmentsXInTreeMemory2DDestination,
+        Span<int> leafSegmentsYInTreeMemory2DDestination,
+
+        out int requiredLengthForFlattenedTreeSpan
+    ) =>
+        GetSegmentTree
+        (
+            rootType,
+            treeBreadth,
+            treeHeight,
+            maxTreeWidth,
+
+            subSegmentsLengthsTreeMemory2DDestination.InnerSpan,
+            subSegmentsDegreesTreeMemory2DDestination.InnerSpan,
+            subSegmentsFirstChildIndexesTreeMemory2DDestination.InnerSpan,
+            subSegmentsParentIndexesTreeMemory2DDestination.InnerSpan,
+
+            leafSegmentsLengthsDestination,
+            leafSegmentsXInTreeMemory2DDestination,
+            leafSegmentsYInTreeMemory2DDestination,
+
+            out requiredLengthForFlattenedTreeSpan
+        );
+
     public static int GetRequiredLengthForFlattenedTreeSpan
     (
         int maxTreeWidth,
@@ -377,10 +413,8 @@ public static class ManagedPointerTheory
     {
         Guard.IsLessThan(x, maxTreeWidth);
         Guard.IsLessThan(y, treeHeight+1);
-        return ref flattenedTree[GetFlattenIndex(maxTreeWidth, x, y)];
+        return ref flattenedTree[Index2DTheory.GetIndex1D(maxTreeWidth, x, y)];
     }
-
-    public static int GetFlattenIndex(int maxTreeWidth, int x, int y) => x + maxTreeWidth * y;
 
 #if false
     public static bool TryGetSubSegments<T>
